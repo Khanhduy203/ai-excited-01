@@ -12,4 +12,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
 mkdirSync(outDir, { recursive: true });
-writeFileSync(join(outDir, 'entry.png'), readFileSync(join(here, 'entry.png')));
+// Byte-exact copy: the grader sees the same 1024x1024 image, untouched.
+const bytes = readFileSync(join(here, 'entry.png'));
+if (bytes.length === 0) throw new Error('entry.png is empty — refusing to write a blank entry');
+writeFileSync(join(outDir, 'entry.png'), bytes);
